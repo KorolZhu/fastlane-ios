@@ -19,17 +19,6 @@ before_all do |lane, options|
     section_identifier: '[Unreleased]', # Specify what section to read
     excluded_markdown_elements: ['-', '###']  # Specify which markdown elements should be excluded
   )
-  slack(
-    message: "Hi! @channel \r\n A new build start",
-    default_payloads: [:git_branch, :lane, :git_author]
-  )
-  # send_e_mail(
-  #   stmp_server: "smtp.exmail.qq.com",
-  #   user_name: "update@hellotalk.com",
-  #   password: "Hello123",
-  #   subject: "default",
-  #   message_body: "Hi! @issenn"
-  # )
 end
 
 before_each do |lane, options|
@@ -104,14 +93,7 @@ lane :do_update_cocoapods do |lane, options|
           silent: false,
           verbose: true,
           use_bundle_exec: true,
-          podfile: './Podfile',
-          error_callback: lambda { |result|
-            slack(
-              message: "Hi! @issenn \r\n cocoapods install failed.",
-              success: false,
-              default_payloads: [:git_branch, :lane, :git_author, :test_result]
-            )
-          }
+          podfile: './Podfile'
         )
       }
     )
@@ -132,7 +114,6 @@ lane :do_run_tests do |options|
     workspace: options[:xcworkspace],
     project: options[:xcodeproj],
     scheme: options[:test_scheme],
-    slack_only_on_failure: (git_branch() != git_get_master_branch()),
     clean: true
   )
 end
@@ -161,20 +142,11 @@ end
 
 lane :do_upload_firim do |lane, options|
   begin
-    slack(
-      message: "Hi! @issenn \r\n A new app uploading",
-      default_payloads: [:git_branch, :lane, :git_author]
-    )
     change_log = "[#{ENV['GIT_BRANCH']}]\r\n---\r\n" + ENV['CHANGELOG']
     firim(
       app_version: ENV['VERSIONNAME'],
       app_build_version: ENV['VERSIONCODE'],
       app_changelog: change_log
-    )
-    slack(
-      message: "Hi! @issenn \r\n A new app upload success \r\n#{ENV['CHANGELOG']}",
-      success: true,
-      default_payloads: [:git_branch, :lane, :git_author, :test_result]
     )
     # send_e_mail(
     #   stmp_server: "smtp.exmail.qq.com",
@@ -189,11 +161,6 @@ lane :do_upload_firim do |lane, options|
     if $upload_retry < 3
       do_upload_firim
     else
-      slack(
-        message: "Hi! @issenn \r\n A new app upload failed",
-        success: false,
-        default_payloads: [:git_branch, :lane, :git_author, :test_result]
-      )
       # raise ex
       puts ex
     end
@@ -215,10 +182,7 @@ after_each do |lane, options|
 end
 
 after_all do |lane, options|
-  slack(
-    message: "Hi! @channel \r\n A new build end",
-    default_payloads: [:git_branch, :lane, :git_author]
-  )
+  
 end
 
 error do |lane, exception, options|
