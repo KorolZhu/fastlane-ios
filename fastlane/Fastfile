@@ -21,7 +21,7 @@ before_all do |lane, options|
   )
   
   wechatwork(	
-    markdown: "a new build start: #{ENV['VERSIONNAME']}(#{ENV['VERSIONCODE']})\r\n  #{ENV['CHANGELOG']}",
+    markdown: "a new build start: #{ENV['VERSIONNAME']}(#{ENV['VERSIONCODE']})\r\n  #{ENV['CHANGELOG']}"
   )
 end
 
@@ -97,7 +97,12 @@ lane :do_update_cocoapods do |lane, options|
           silent: false,
           verbose: true,
           use_bundle_exec: true,
-          podfile: './Podfile'
+          podfile: './Podfile',
+          error_callback: lambda { |result|	
+            wechatwork(	
+              markdown: "pod install failed"
+              )
+          }
         )
       }
     )
@@ -147,6 +152,11 @@ end
 lane :do_upload_firim do |lane, options|
   begin
     change_log = "[#{ENV['GIT_BRANCH']}]\r\n---\r\n" + ENV['CHANGELOG']
+    
+    wechatwork(	
+        markdown: "new app uploading to fir"
+    )
+    
     firim(
       app_version: ENV['VERSIONNAME'],
       app_build_version: ENV['VERSIONCODE'],
@@ -159,6 +169,11 @@ lane :do_upload_firim do |lane, options|
     #   subject: "default",
     #   message_body: "Hi! @issenn \r\n A new app upload success \r\n#{ENV['CHANGELOG']}"
     # )
+    
+    wechatwork(	
+        markdown: " app upload success"
+    )
+    
     $upload_retry=0
   rescue => ex
     $upload_retry += 1
@@ -166,6 +181,9 @@ lane :do_upload_firim do |lane, options|
       do_upload_firim
     else
       # raise ex
+      wechatwork(	
+        markdown: " app upload failed"
+    )
       puts ex
     end
   end
@@ -186,7 +204,9 @@ after_each do |lane, options|
 end
 
 after_all do |lane, options|
-  
+   wechatwork(	
+        markdown: " build end"
+    )
 end
 
 error do |lane, exception, options|
