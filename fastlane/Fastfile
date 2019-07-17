@@ -19,6 +19,10 @@ before_all do |lane, options|
     section_identifier: '[Unreleased]', # Specify what section to read
     excluded_markdown_elements: ['-', '###']  # Specify which markdown elements should be excluded
   )
+  
+  wechatwork(	
+    markdown: "a new build start: #{ENV['VERSIONNAME']}(#{ENV['VERSIONCODE']})\r\n  #{ENV['CHANGELOG']}",
+  )
 end
 
 before_each do |lane, options|
