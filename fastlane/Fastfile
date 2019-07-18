@@ -25,8 +25,8 @@ before_all do |lane, options|
 
   wechatwork(
     webhook: ENV['IOS_GROUP'],
-    markdown: "**#{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']}) BUILD START** \r\n  #{ENV['CHANGELOG']}",
-    mentioned_mobile_list: ["13632557538", "15919725845"]
+    markdown: "**#{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']}) BUILD START** \r\n\n  #{ENV['CHANGELOG']}",
+    mentioned_mobile_list: []
   )
 end
 
@@ -104,9 +104,11 @@ lane :do_update_cocoapods do |lane, options|
           use_bundle_exec: true,
           podfile: './Podfile',
           error_callback: lambda { |result|	
-            wechatwork(	
-              markdown: "pod install failed"
-              )
+            wechatwork(
+              webhook: ENV['IOS_GROUP'],
+              markdown: "**#{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']}) POD INSTALL FAILED",
+              mentioned_mobile_list: []
+            )
           }
         )
       }
@@ -158,9 +160,11 @@ lane :do_upload_firim do |lane, options|
   begin
     change_log = "[#{ENV['GIT_BRANCH']}]\r\n---\r\n" + ENV['CHANGELOG']
     
-    wechatwork(	
-        markdown: "new app uploading to fir"
-    )
+    wechatwork(
+              webhook: ENV['IOS_GROUP'],
+              markdown: "**#{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']}) UPLOADING",
+              mentioned_mobile_list: []
+            )
     
     firim(
       app_version: ENV['VERSIONNAME'],
@@ -175,9 +179,19 @@ lane :do_upload_firim do |lane, options|
     #   message_body: "Hi! @issenn \r\n A new app upload success \r\n#{ENV['CHANGELOG']}"
     # )
     
-    wechatwork(	
-        markdown: " app upload success"
-    )
+    wechatwork(
+    webhook: ENV['PROJECT_GROUP'],
+    markdown: "**HelloTalk(iOS) #{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']})** \r\n\n  #{ENV['CHANGELOG']}",
+    mentioned_mobile_list: ["18779144521", "18126009603"]
+  )
+
+  wechatwork(
+    webhook: ENV['IOS_GROUP'],
+    markdown: "**HelloTalk(iOS) #{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']}) BUILD SUCCEED** \r\n\n  #{ENV['CHANGELOG']}",
+    mentioned_mobile_list: []
+  )
+
+    
     
     $upload_retry=0
   rescue => ex
@@ -186,9 +200,11 @@ lane :do_upload_firim do |lane, options|
       do_upload_firim
     else
       # raise ex
-      wechatwork(	
-        markdown: " app upload failed"
-    )
+      wechatwork(
+              webhook: ENV['IOS_GROUP'],
+              markdown: "**#{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']}) UPLOAD FAILED",
+              mentioned_mobile_list: []
+            )
       puts ex
     end
   end
@@ -209,9 +225,11 @@ after_each do |lane, options|
 end
 
 after_all do |lane, options|
-   wechatwork(	
-        markdown: " build end"
-    )
+   wechatwork(
+    webhook: ENV['IOS_GROUP'],
+    markdown: "**HelloTalk(iOS) #{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']}) BUILD END** \r\n\n}",
+    mentioned_mobile_list: []
+  )
 end
 
 error do |lane, exception, options|
