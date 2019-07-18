@@ -24,7 +24,7 @@ before_all do |lane, options|
   ENV['PROJECT_GROUP] = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=702e4d43-270b-4c1d-9d9c-eadc5ac3651a"
 
   wechatwork(
-    webhook: ENV['IOS_GROUP']",
+    webhook: ENV['IOS_GROUP'],
     markdown: "**#{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']}) BUILD START** \r\n  #{ENV['CHANGELOG']}",
     mentioned_mobile_list: ["13632557538", "15919725845"]
   )
