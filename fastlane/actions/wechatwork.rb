@@ -4,22 +4,24 @@ module Fastlane
       def self.run(params)
         options = params || {}
 
-        [:markdown].each do |key|
+        [:markdown, :webhook, :mentioned_mobile_list].each do |key|
           UI.user_error!("No #{key} given.") unless options[key]
         end
 
         markdown = options[:markdown]
+        webhook = options[:webhook]
+        mentioned_mobile_list = options[:mentioned_mobile_list]
 
-        self.post_to_wechat(markdown)
+        self.post_to_wechat(webhook, markdown, mentioned_mobile_list)
         
       end
 
-      def self.post_to_wechat(markdown)
+      def self.post_to_wechat(webhook, markdown, mentioned_mobile_list)
         require 'net/http'
         require 'uri'
         require 'json'
 
-        uri = URI.parse("https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=ff00389c-ece4-4648-9a7e-0f5f50c06a23")
+        uri = URI.parse("#{webhook}")
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = true
 
@@ -32,8 +34,17 @@ module Fastlane
         # 设置请求头
         header = {'Content-Type':'application/json'}
         response = http.post(uri, data, header)
-
         self.check_response(response)
+
+        if mentioned_mobile_list
+          params = {}
+          params["msgtype"] = "text"
+          params["text"] = {"content": "", "mentioned_mobile_list": mentioned_mobile_list}
+          data = params.to_json
+          response = http.post(uri, data, header)
+          self.check_response(response)
+        end
+
       end
 
       def self.check_response(response)
@@ -52,7 +63,9 @@ module Fastlane
 
       def self.available_options
         [
-          ['markdown', 'The markdown to post']
+          ['webhook', 'wechatwork webhook'],
+          ['markdown', 'The markdown to post'],
+          ['mentioned_mobile_list', 'The mentioned_mobile_list']
         ]
       end
 
