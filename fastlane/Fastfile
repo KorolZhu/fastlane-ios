@@ -21,7 +21,9 @@ before_all do |lane, options|
   )
   
   wechatwork(	
-    markdown: "a new build start: #{ENV['VERSIONNAME']}(#{ENV['VERSIONCODE']})\r\n  #{ENV['CHANGELOG']}"
+    webhook: "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=ff00389c-ece4-4648-9a7e-0f5f50c06a23",
+    markdown: "a new build start: #{ENV['VERSIONNAME']}(#{ENV['VERSIONCODE']})\r\n  #{ENV['CHANGELOG']}",
+    mentioned_mobile_list: ["13632557538", "15919725845"]
   )
 end
 
