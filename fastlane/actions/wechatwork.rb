@@ -12,11 +12,21 @@ module Fastlane
         webhook = options[:webhook]
         mentioned_mobile_list = options[:mentioned_mobile_list]
 
-        self.post_to_wechat(webhook, markdown, mentioned_mobile_list)
-        
+        params = {}
+        params["msgtype"] = "markdown"
+        params["markdown"] = {"content": markdown}
+        self.post_to_wechat(webhook, params)
+
+        if mentioned_mobile_list.empty? == false
+          params = {}
+          params["msgtype"] = "text"
+          params["text"] = {"content": "", "mentioned_mobile_list": mentioned_mobile_list}
+          self.post_to_wechat(webhook, params)
+        end
+
       end
 
-      def self.post_to_wechat(webhook, markdown, mentioned_mobile_list)
+      def self.post_to_wechat(webhook, params)
         require 'net/http'
         require 'uri'
         require 'json'
@@ -26,9 +36,6 @@ module Fastlane
         http.use_ssl = true
 
         # 设置请求参数
-        params = {}
-        params["msgtype"] = "markdown"
-        params["markdown"] = {"content": markdown}
         data = params.to_json
 
         # 设置请求头
@@ -36,24 +43,15 @@ module Fastlane
         response = http.post(uri, data, header)
         self.check_response(response)
 
-        if mentioned_mobile_list
-          params = {}
-          params["msgtype"] = "text"
-          params["text"] = {"content": "", "mentioned_mobile_list": mentioned_mobile_list}
-          data = params.to_json
-          response = http.post(uri, data, header)
-          self.check_response(response)
-        end
-
       end
 
       def self.check_response(response)
         case response.code.to_i
         when 200, 204
-          UI.success('Successfully sent wechatwork notification')
+          UI.success('---Successfully sent wechatwork notification')
           true
         else
-          UI.user_error!("Could not sent wechatwork notification")
+          UI.user_error!("--- Could not sent wechatwork notification")
         end
       end
 
@@ -80,7 +78,9 @@ module Fastlane
       def self.example_code
         [
           'wechatwork(
-              markdown: ""
+              webhook: "url",
+              markdown: "",
+              mentioned_mobile_list: ["136***", "159***"]
           )'
         ]
       end

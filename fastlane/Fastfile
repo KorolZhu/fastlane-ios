@@ -89,6 +89,13 @@ end
 
 lane :do_update_cocoapods do |lane, options|
   if files_matching(pattern: "Podfile") != nil
+    
+    wechatwork(
+      webhook: ENV['IOS_GROUP'],
+      markdown: "**POD INSTALLING**",
+      mentioned_mobile_list: []
+    )
+   
     cocoapods(
       repo_update: true,
       silent: false,
@@ -106,13 +113,20 @@ lane :do_update_cocoapods do |lane, options|
           error_callback: lambda { |result|	
             wechatwork(
               webhook: ENV['IOS_GROUP'],
-              markdown: "**#{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']}) POD INSTALL FAILED",
+              markdown: "❌**POD INSTALL FAILED**",
               mentioned_mobile_list: []
             )
           }
         )
       }
     )
+
+    wechatwork(
+      webhook: ENV['IOS_GROUP'],
+      markdown: "✅**POD INSTALL SUCCEED",
+      mentioned_mobile_list: []
+    )
+
   end
 end
 
@@ -141,7 +155,27 @@ end
 
 lane :do_publish do |lane, options|
   do_update_cocoapods
+  
+  wechatwork(
+    webhook: ENV['IOS_GROUP'],
+    markdown: "**MATCHING**",
+    mentioned_mobile_list: []
+  )
+
   match
+
+  wechatwork(
+    webhook: ENV['IOS_GROUP'],
+    markdown: "✅**MATCH SUCCEED**",
+    mentioned_mobile_list: []
+  )
+
+  wechatwork(
+    webhook: ENV['IOS_GROUP'],
+    markdown: "**BUILDING**",
+    mentioned_mobile_list: []
+  )
+
   ENV['DELIVER_IPA_PATH']=gym(
     export_options: {
       compileBitcode: true,
@@ -152,7 +186,25 @@ lane :do_publish do |lane, options|
       iCloudContainerEnvironment: "Production"
     }
   )
+
+  wechatwork(
+    webhook: ENV['IOS_GROUP'],
+    markdown: "✅**BUILD SUCCEED**",
+    mentioned_mobile_list: []
+  )
+
+  wechatwork(
+    webhook: ENV['IOS_GROUP'],
+    markdown: "**SYMBOLS UPLOADING**",
+    mentioned_mobile_list: []
+  )
   upload_symbols_to_crashlytics()
+  wechatwork(
+    webhook: ENV['IOS_GROUP'],
+    markdown: "✅**SYMBOLS UPLOADED",
+    mentioned_mobile_list: []
+  )
+
   do_upload_firim
 end
 
@@ -161,10 +213,10 @@ lane :do_upload_firim do |lane, options|
     change_log = "[#{ENV['GIT_BRANCH']}]\r\n---\r\n" + ENV['CHANGELOG']
     
     wechatwork(
-              webhook: ENV['IOS_GROUP'],
-              markdown: "**#{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']}) UPLOADING",
-              mentioned_mobile_list: []
-            )
+      webhook: ENV['IOS_GROUP'],
+      markdown: "**UPLOADING TO FIR**",
+      mentioned_mobile_list: []
+    )
     
     firim(
       app_version: ENV['VERSIONNAME'],
@@ -178,20 +230,18 @@ lane :do_upload_firim do |lane, options|
     #   subject: "default",
     #   message_body: "Hi! @issenn \r\n A new app upload success \r\n#{ENV['CHANGELOG']}"
     # )
+
+    wechatwork(
+      webhook: ENV['IOS_GROUP'],
+      markdown: "✅**UPLOAD TO FIR SUCCEED**",
+      mentioned_mobile_list: []
+    )
     
     wechatwork(
-    webhook: ENV['PROJECT_GROUP'],
-    markdown: "**HelloTalk(iOS) #{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']})** \r\n\n  #{ENV['CHANGELOG']}",
-    mentioned_mobile_list: ["18779144521", "18126009603"]
-  )
-
-  wechatwork(
-    webhook: ENV['IOS_GROUP'],
-    markdown: "**HelloTalk(iOS) #{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']}) BUILD SUCCEED** \r\n\n  #{ENV['CHANGELOG']}",
-    mentioned_mobile_list: []
-  )
-
-    
+      webhook: ENV['PROJECT_GROUP'],
+      markdown: "**HelloTalk(iOS) #{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']})** \r\n\n  #{ENV['CHANGELOG']}",
+      mentioned_mobile_list: ["18779144521", "18126009603"]
+    )
     
     $upload_retry=0
   rescue => ex
@@ -201,10 +251,10 @@ lane :do_upload_firim do |lane, options|
     else
       # raise ex
       wechatwork(
-              webhook: ENV['IOS_GROUP'],
-              markdown: "**#{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']}) UPLOAD FAILED",
-              mentioned_mobile_list: []
-            )
+        webhook: ENV['IOS_GROUP'],
+        markdown: "❌**UPLOAD TO FIR FAILED",
+        mentioned_mobile_list: []
+      )
       puts ex
     end
   end
@@ -227,7 +277,7 @@ end
 after_all do |lane, options|
    wechatwork(
     webhook: ENV['IOS_GROUP'],
-    markdown: "**HelloTalk(iOS) #{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']}) BUILD END** \r\n\n}",
+    markdown: "**BUILD END**",
     mentioned_mobile_list: []
   )
 end
