@@ -30,7 +30,7 @@ before_all do |lane, options|
   
   ENV['CHANGELOG'] = changelog_from_git_commits(
       between: ["{ENV['GIT_PREVIOUS_SUCCESSFUL_COMMIT']}", "{ENV['GIT_COMMIT']}"],
-      fallback_changelog: "Bug fixes and performance enhancements",
+      merge_commit_filtering: "exclude_merges" 
     )
   
   ENV['IOS_GROUP'] = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=ff00389c-ece4-4648-9a7e-0f5f50c06a23'
