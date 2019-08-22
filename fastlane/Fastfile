@@ -22,16 +22,15 @@ before_all do |lane, options|
 #     excluded_markdown_elements: ['-', '###']  # Specify which markdown elements should be excluded
 #   )
   
-  ENV['CHANGELOG'] = make_changelog_from_jenkins(
-  # Optional, lets you set a changelog in the case is not generated on Jenkins or if ran outside of Jenkins
-    fallback_changelog: "Bug fixes and performance enhancements",
-    include_commit_body: true
-  )
+#   ENV['CHANGELOG'] = make_changelog_from_jenkins(
+#   # Optional, lets you set a changelog in the case is not generated on Jenkins or if ran outside of Jenkins
+#     fallback_changelog: "Bug fixes and performance enhancements",
+#     include_commit_body: true
+#   )
   
   ENV['CHANGELOG'] = changelog_from_git_commits(
-      between: [ENV['GIT_PREVIOUS_SUCCESSFUL_COMMIT'], ENV['GIT_COMMIT']],
+      between: ["{ENV['GIT_PREVIOUS_SUCCESSFUL_COMMIT']}", "{ENV['GIT_COMMIT']}"],
       fallback_changelog: "Bug fixes and performance enhancements",
-      pretty: " (%h) [%aN] %s"
     )
   
   ENV['IOS_GROUP'] = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=ff00389c-ece4-4648-9a7e-0f5f50c06a23'
