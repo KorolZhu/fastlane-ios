@@ -12,12 +12,20 @@ before_all do |lane, options|
   # ENV['FIR_APP_TOKEN'] = '9611b6a99d280463039cbb64b7eb24ca'
   ENV["GIT_BRANCH"] = git_branch
   ENV['VERSIONNAME'] ||= get_version_number
-  ENV['VERSIONCODE'] ||= get_info_plist_value(key: "CFBundleVersion")
+#   ENV['VERSIONCODE'] ||= get_info_plist_value(key: "CFBundleVersion")
+    ENV['VERSIONCODE'] ||= increment_build_number
+
   # puts get_build_number
-  ENV['CHANGELOG'] = read_changelog(
-    changelog_path: './CHANGELOG.md', # Specify path to CHANGELOG.md
-    section_identifier: '[Unreleased]', # Specify what section to read
-    excluded_markdown_elements: ['-', '###']  # Specify which markdown elements should be excluded
+#   ENV['CHANGELOG'] = read_changelog(
+#     changelog_path: './CHANGELOG.md', # Specify path to CHANGELOG.md
+#     section_identifier: '[Unreleased]', # Specify what section to read
+#     excluded_markdown_elements: ['-', '###']  # Specify which markdown elements should be excluded
+#   )
+  
+  ENV['CHANGELOG'] = make_changelog_from_jenkins(
+  # Optional, lets you set a changelog in the case is not generated on Jenkins or if ran outside of Jenkins
+    fallback_changelog: "Bug fixes and performance enhancements",
+    include_commit_body: true
   )
   
   ENV['IOS_GROUP'] = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=ff00389c-ece4-4648-9a7e-0f5f50c06a23'
@@ -241,6 +249,18 @@ lane :do_upload_firim do |lane, options|
       webhook: ENV['PROJECT_GROUP'],
       markdown: "**HelloTalk(iOS) #{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']})** \r\n\n  #{ENV['CHANGELOG']}",
       mentioned_mobile_list: ["18779144521", "18126009603"]
+    )
+    
+    commit_version_bump(
+       message: "#{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']})"
+    )
+    
+    push_to_git_remote
+    
+    wechatwork(
+      webhook: ENV['IOS_GROUP'],
+      markdown: "✅**increment build number and pushed**",
+      mentioned_mobile_list: []
     )
     
     $upload_retry=0
