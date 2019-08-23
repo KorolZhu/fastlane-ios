@@ -28,6 +28,22 @@ before_all do |lane, options|
 #     include_commit_body: true
 #   )
   
+  changelog_from_git_commits(
+      between: ["{ENV['GIT_PREVIOUS_SUCCESSFUL_COMMIT']}", "{ENV['GIT_COMMIT']}"],
+      merge_commit_filtering: "exclude_merges" 
+    )
+  
+  changelog = ""
+  if changelog = Actions.lane_context[:FL_CHANGELOG]
+    wechatwork(
+    webhook: ENV['IOS_GROUP'],
+    markdown: "**{changelog} build 222 **",
+    mentioned_mobile_list: []
+  ) else {
+    
+    }
+  end 
+  
   ENV['CHANGELOG'] = changelog_from_git_commits(
       between: ["{ENV['GIT_PREVIOUS_SUCCESSFUL_COMMIT']}", "{ENV['GIT_COMMIT']}"],
       merge_commit_filtering: "exclude_merges" 
