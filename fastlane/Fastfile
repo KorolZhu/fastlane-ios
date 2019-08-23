@@ -16,11 +16,11 @@ before_all do |lane, options|
     ENV['VERSIONCODE'] ||= increment_build_number
 
   # puts get_build_number
-#   ENV['CHANGELOG'] = read_changelog(
-#     changelog_path: './CHANGELOG.md', # Specify path to CHANGELOG.md
-#     section_identifier: '[Unreleased]', # Specify what section to read
-#     excluded_markdown_elements: ['-', '###']  # Specify which markdown elements should be excluded
-#   )
+  ENV['CHANGELOG'] = read_changelog(
+    changelog_path: './CHANGELOG.md', # Specify path to CHANGELOG.md
+    section_identifier: '[Unreleased]', # Specify what section to read
+    excluded_markdown_elements: ['-', '###']  # Specify which markdown elements should be excluded
+  )
   
 #   ENV['CHANGELOG'] = make_changelog_from_jenkins(
 #   # Optional, lets you set a changelog in the case is not generated on Jenkins or if ran outside of Jenkins
@@ -28,20 +28,20 @@ before_all do |lane, options|
 #     include_commit_body: true
 #   )
   
-  changelog_from_git_commits(
-      between: ["56d8b3511", "56d8b3511"],
-      merge_commit_filtering: "exclude_merges" 
-    )
+#   changelog_from_git_commits(
+#       between: ["56d8b3511", "56d8b3511"],
+#       merge_commit_filtering: "exclude_merges" 
+#     )
   
-  changelog = Actions.lane_context[:FL_CHANGELOG]
-  puts "---#{changelog}---"
+#   changelog = Actions.lane_context[:FL_CHANGELOG]
+#   puts "---#{changelog}---"
   
-  ENV['CHANGELOG'] = changelog_from_git_commits(
-      between: ["56d8b3511", "56d8b3511"],
-      merge_commit_filtering: "exclude_merges" 
-    )
+#   ENV['CHANGELOG'] = changelog_from_git_commits(
+#       between: ["56d8b3511", "56d8b3511"],
+#       merge_commit_filtering: "exclude_merges" 
+#     )
   
-    puts "2---#{ENV['CHANGELOG']}---"
+#     puts "2---#{ENV['CHANGELOG']}---"
 
 
   ENV['IOS_GROUP'] = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=ff00389c-ece4-4648-9a7e-0f5f50c06a23'
