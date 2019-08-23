@@ -29,26 +29,21 @@ before_all do |lane, options|
 #   )
   
   changelog_from_git_commits(
-      between: ["{ENV['GIT_PREVIOUS_SUCCESSFUL_COMMIT']}", "{ENV['GIT_COMMIT']}"],
+      between: ["56d8b3511", "56d8b3511"],
       merge_commit_filtering: "exclude_merges" 
     )
   
-  changelog = ""
-  if changelog = Actions.lane_context[:FL_CHANGELOG]
-    wechatwork(
-    webhook: ENV['IOS_GROUP'],
-    markdown: "**{changelog} build 222 **",
-    mentioned_mobile_list: []
-  ) else {
-    
-    }
-  end 
+  changelog = Actions.lane_context[:FL_CHANGELOG]
+  puts "---#{changelog}---"
   
   ENV['CHANGELOG'] = changelog_from_git_commits(
-      between: ["{ENV['GIT_PREVIOUS_SUCCESSFUL_COMMIT']}", "{ENV['GIT_COMMIT']}"],
+      between: ["56d8b3511", "56d8b3511"],
       merge_commit_filtering: "exclude_merges" 
     )
   
+    puts "2---#{ENV['CHANGELOG']}---"
+
+
   ENV['IOS_GROUP'] = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=ff00389c-ece4-4648-9a7e-0f5f50c06a23'
   ENV['PROJECT_GROUP'] = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=702e4d43-270b-4c1d-9d9c-eadc5ac3651a'
 
