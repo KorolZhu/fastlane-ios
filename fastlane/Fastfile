@@ -206,7 +206,7 @@ lane :do_publish do |lane, options|
       stripSwiftSymbols: true,
       uploadBitcode: false,
       uploadSymbols: false,
-      thinning: "<thin-for-all-variants>",
+      thinning: "<none>",
       iCloudContainerEnvironment: "Production"
     }
   )
