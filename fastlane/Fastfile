@@ -6,16 +6,10 @@
 # update_fastlane
 
 before_all do |lane, options|
-  # git_pull
-  # ENV['MAILGUN_SANDBOX_POSTMASTER'] = 'issenn@sandboxc3b6b7d6022b484eabc7c39f728536a5.mailgun.org'
-  # ENV['MAILGUN_APIKEY'] = '5d21a2e0cce1996b200d8f991d72856d-a4502f89-ce938adb'
-  # ENV['FIR_APP_TOKEN'] = '9611b6a99d280463039cbb64b7eb24ca'
   ENV["GIT_BRANCH"] = git_branch
   ENV['VERSIONNAME'] ||= get_version_number
 #   ENV['VERSIONCODE'] ||= get_info_plist_value(key: "CFBundleVersion")
-    ENV['VERSIONCODE'] ||= increment_build_number
-
-  # puts get_build_number
+  ENV['VERSIONCODE'] ||= increment_build_number
 #   ENV['CHANGELOG'] = read_changelog(
 #     changelog_path: './CHANGELOG.md', # Specify path to CHANGELOG.md
 #     section_identifier: '[Unreleased]', # Specify what section to read
@@ -27,7 +21,15 @@ before_all do |lane, options|
 #     fallback_changelog: "Bug fixes and performance enhancements",
 #     include_commit_body: true
 #   )
+
+
+ 
+
   
+puts "PREVIOUS_SUCCESSFUL_COMMIT: #{ENV['GIT_PREVIOUS_SUCCESSFUL_COMMIT']}"
+puts "GIT_COMMIT: #{ENV['GIT_COMMIT']"
+
+
   changelog_from_git_commits(
       between: ["56d8b3511", "56d8b3511"],
       merge_commit_filtering: "exclude_merges" 
@@ -47,11 +49,11 @@ before_all do |lane, options|
   ENV['IOS_GROUP'] = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=ff00389c-ece4-4648-9a7e-0f5f50c06a23'
   ENV['PROJECT_GROUP'] = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=702e4d43-270b-4c1d-9d9c-eadc5ac3651a'
 
-  wechatwork(
-    webhook: ENV['IOS_GROUP'],
-    markdown: "**#{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']}) BUILD START** \r\n\n  #{ENV['CHANGELOG']}",
-    mentioned_mobile_list: []
-  )
+  # wechatwork(
+  #   webhook: ENV['IOS_GROUP'],
+  #   markdown: "**#{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']}) BUILD START** \r\n\n  #{ENV['CHANGELOG']}",
+  #   mentioned_mobile_list: []
+  # )
 end
 
 before_each do |lane, options|
@@ -174,7 +176,7 @@ end
 
 desc "Submit a new Release Build to all"
 lane :do_publish_all do |lane, options|
-  do_publish
+  # do_publish
 end
 
 lane :do_publish do |lane, options|
