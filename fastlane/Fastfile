@@ -167,7 +167,7 @@ end
 
 desc "Submit a new Release Build to all"
 lane :do_publish_all do |lane, options|
-  UI.user_error!("Reason for failure here")
+  #UI.user_error!("Reason for failure here")
   # do_publish
 end
 
