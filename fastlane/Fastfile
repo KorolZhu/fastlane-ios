@@ -10,40 +10,28 @@ before_all do |lane, options|
   ENV['VERSIONNAME'] ||= get_version_number
 #   ENV['VERSIONCODE'] ||= get_info_plist_value(key: "CFBundleVersion")
   ENV['VERSIONCODE'] ||= increment_build_number
-#   ENV['CHANGELOG'] = read_changelog(
-#     changelog_path: './CHANGELOG.md', # Specify path to CHANGELOG.md
-#     section_identifier: '[Unreleased]', # Specify what section to read
-#     excluded_markdown_elements: ['-', '###']  # Specify which markdown elements should be excluded
-#   )
-  
-#   ENV['CHANGELOG'] = make_changelog_from_jenkins(
-#   # Optional, lets you set a changelog in the case is not generated on Jenkins or if ran outside of Jenkins
-#     fallback_changelog: "Bug fixes and performance enhancements",
-#     include_commit_body: true
-#   )
 
-
- 
-
-  
 puts "PREVIOUS_SUCCESSFUL_COMMIT: #{ENV['GIT_PREVIOUS_SUCCESSFUL_COMMIT']}"
 puts "GIT_COMMIT: #{ENV['GIT_COMMIT']"
-
 
   changelog_from_git_commits(
       between: ["56d8b3511", "56d8b3511"],
       merge_commit_filtering: "exclude_merges" 
     )
+#   changelog_from_git_commits(
+#       between: ["56d8b3511", "56d8b3511"],
+#       merge_commit_filtering: "exclude_merges" 
+#     )
   
-  changelog = Actions.lane_context[:FL_CHANGELOG]
-  puts "---#{changelog}---"
+#   changelog = Actions.lane_context[:FL_CHANGELOG]
+#   puts "---#{changelog}---"
   
-  ENV['CHANGELOG'] = changelog_from_git_commits(
-      between: ["56d8b3511", "56d8b3511"],
-      merge_commit_filtering: "exclude_merges" 
-    )
+#   ENV['CHANGELOG'] = changelog_from_git_commits(
+#       between: ["56d8b3511", "56d8b3511"],
+#       merge_commit_filtering: "exclude_merges" 
+#     )
   
-    puts "2---#{ENV['CHANGELOG']}---"
+#     puts "2---#{ENV['CHANGELOG']}---"
 
 
   ENV['IOS_GROUP'] = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=ff00389c-ece4-4648-9a7e-0f5f50c06a23'
@@ -208,7 +196,7 @@ lane :do_publish do |lane, options|
       stripSwiftSymbols: true,
       uploadBitcode: false,
       uploadSymbols: false,
-      thinning: "<thin-for-all-variants>",
+      thinning: "<none>",
       iCloudContainerEnvironment: "Production"
     }
   )
