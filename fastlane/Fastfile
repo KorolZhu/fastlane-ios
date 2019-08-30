@@ -14,10 +14,13 @@ before_all do |lane, options|
 puts "PREVIOUS_SUCCESSFUL_COMMIT: #{ENV['GIT_PREVIOUS_SUCCESSFUL_COMMIT']}"
 puts "GIT_COMMIT: #{ENV['GIT_COMMIT']}"
 
-  changelog_from_git_commits(
-      between: ["56d8b3511", "56d8b3511"],
+  changelog = changelog_from_git_commits(
+      between: [ENV['GIT_PREVIOUS_SUCCESSFUL_COMMIT'], ENV['GIT_COMMIT']],
       merge_commit_filtering: "exclude_merges" 
     )
+
+    puts "--- changelog: #{changelog}"
+
 #   changelog_from_git_commits(
 #       between: ["56d8b3511", "56d8b3511"],
 #       merge_commit_filtering: "exclude_merges" 
