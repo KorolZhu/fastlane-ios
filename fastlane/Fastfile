@@ -15,8 +15,6 @@ before_all do |lane, options|
       merge_commit_filtering: "exclude_merges" 
     )
 
-  puts "----- changelog: #{ENV['CHANGELOG']} -----"
-
   ENV['IOS_GROUP'] = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=ff00389c-ece4-4648-9a7e-0f5f50c06a23'
   ENV['PROJECT_GROUP'] = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=702e4d43-270b-4c1d-9d9c-eadc5ac3651a'
 
