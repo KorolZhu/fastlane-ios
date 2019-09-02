@@ -16,12 +16,12 @@ before_all do |lane, options|
   puts "GIT_COMMIT: " + current
 
   changelog = ""
-  if previous != nil and current != nil {
+  if previous != nil and current != nil 
     hash_range = previous + "..." + current
     changelog = sh("git log --pretty='> %s%n' #{hash_range} --no-merges")
-  } else {
+  else 
     changelog = "Fixed some bugs.."
-  }
+  end
 
   ENV['CHANGELOG'] = changelog
   ENV['IOS_GROUP'] = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=ff00389c-ece4-4648-9a7e-0f5f50c06a23'
