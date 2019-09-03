@@ -160,7 +160,7 @@ lane :do_publish_all do |lane, options|
   )
  
   sh("git remote rm Bitbucket")
-  sh("git remote add Bitbucket", "ssh://git@git.hellotalk8.com:7999/ios/ht_binary_ios.git")
+  sh("git remote add Bitbucket ssh://git@git.hellotalk8.com:7999/ios/ht_binary_ios.git")
   sh("git pull Bitbucket", ENV["GIT_BRANCH"])
   push_to_git_remote(
     remote: "Bitbucket",         # optional, default: "origin"
