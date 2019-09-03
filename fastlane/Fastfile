@@ -19,6 +19,14 @@ before_all do |lane, options|
   if previous != nil and current != nil 
     hash_range = previous + "..." + current
     changelog = sh("git log --pretty='> %s%n' #{hash_range} --no-merges")
+    changelog_arr = changelog.split("\n")
+    result = []
+    for item in changelog_arr do
+      if item.downcase.include? "[ci build]"
+        result.push(item)
+      end
+    end
+    changelog = result.join("\n")
   else 
     changelog = "Fixed some bugs.."
   end
