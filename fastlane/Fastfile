@@ -36,6 +36,7 @@ before_all do |lane, options|
         item_strip = item.strip
         if item_strip.length > 0
           if item_strip.downcase.include? "[ci build]"
+            item_strip = item_strip.gsub("[ci build]", "")
             result.push("> #{item_strip}")
           end
         end
