@@ -35,9 +35,9 @@ before_all do |lane, options|
       for item in changelog_arr do
         item_strip = item.strip
         if item_strip.length > 0
-          # if item.downcase.include? "[ci build]"
+          if item_strip.downcase.include? "[ci build]"
             result.push("> #{item_strip}")
-          # end
+          end
         end
       end
       changelog = result.join("\n\n")
