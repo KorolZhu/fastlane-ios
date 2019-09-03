@@ -38,6 +38,7 @@ before_all do |lane, options|
           markdown_link = item_strip.match(/^\[.*\]\(.*\)$/)
           if markdown_link != nil 
             result.push("> #{item_strip}")
+            break
           end
 
           if item_strip.downcase.include? "[ci build]"
@@ -185,24 +186,6 @@ end
 
 desc "Submit a new Release Build to all"
 lane :do_publish_all do |lane, options|
-
-  commit_version_bump(
-    message: "#{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']})"
-  )
- 
-  git_remote = sh("git remote")
-  if !git_remote.include? "Bitbucket"
-    sh("git remote add Bitbucket ssh://git@git.hellotalk8.com:7999/ios/ht_binary_ios.git")
-  end
-
-  sh("git pull Bitbucket #{ENV["GIT_BRANCH"]}")
-  push_to_git_remote(
-    remote: "Bitbucket",         # optional, default: "origin"
-    local_branch: "develop",  # optional, aliased by "branch", default is set to current branch
-    remote_branch: "develop", # optional, default is set to local_branch
-  )
-
-  #UI.user_error!("Reason for failure here")
   # do_publish
 end
 
@@ -297,10 +280,20 @@ lane :do_upload_firim do |lane, options|
     )
     
     commit_version_bump(
-       message: "#{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']})"
+    message: "#{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']})"
     )
-    
-    push_to_git_remote
+ 
+    git_remote = sh("git remote")
+    if !git_remote.include? "Bitbucket"
+      sh("git remote add Bitbucket ssh://git@git.hellotalk8.com:7999/ios/ht_binary_ios.git")
+    end
+
+    sh("git pull Bitbucket #{ENV["GIT_BRANCH"]}")
+    push_to_git_remote(
+      remote: "Bitbucket",         # optional, default: "origin"
+      local_branch: "develop",  # optional, aliased by "branch", default is set to current branch
+      remote_branch: "develop", # optional, default is set to local_branch
+    )
     
     wechatwork(
       webhook: ENV['IOS_GROUP'],
