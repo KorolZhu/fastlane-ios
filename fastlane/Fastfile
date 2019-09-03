@@ -39,7 +39,7 @@ before_all do |lane, options|
           if markdown_link != nil 
             result.push("> #{item_strip}")
           elsif item_strip.downcase.include? "[ci build]"
-              item_strip = item_strip.gsub("[ci build]", "")
+              item_strip = item_strip.gsub(/\[ci build\]/i, "")
               result.push("> #{item_strip}")
           end
         end
