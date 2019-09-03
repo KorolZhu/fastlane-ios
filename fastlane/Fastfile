@@ -160,7 +160,7 @@ lane :do_publish_all do |lane, options|
   )
  
   git_remote = sh("git remote")
-  if git_remote.include? "Bitbucket" == false
+  if !git_remote.include? "Bitbucket"
     sh("git remote add Bitbucket ssh://git@git.hellotalk8.com:7999/ios/ht_binary_ios.git")
   end
 
