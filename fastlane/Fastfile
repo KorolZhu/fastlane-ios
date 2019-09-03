@@ -44,6 +44,7 @@ before_all do |lane, options|
               result.push("> #{item_strip}")
             end
           end
+        end
       end
       changelog = result.join("\n\n")
     else 
