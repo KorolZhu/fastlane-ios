@@ -10,28 +10,40 @@ before_all do |lane, options|
   ENV['VERSIONNAME'] ||= get_version_number
   ENV['VERSIONCODE'] ||= increment_build_number
 
-  previous = ENV['GIT_PREVIOUS_SUCCESSFUL_COMMIT']
-  current = ENV['GIT_COMMIT']
-  puts "PREVIOUS_SUCCESSFUL_COMMIT: " + previous
-  puts "GIT_COMMIT: " + current
-
   changelog = ""
-  if previous != nil and current != nil 
-    hash_range = previous + "..." + current
-    changelog = sh("git log --pretty='%B%n' #{hash_range} --no-merges")
-    changelog_arr = changelog.split("\n")
-    result = []
-    for item in changelog_arr do
-      item_strip = item.strip
-      if item_strip.length > 0
-        # if item.downcase.include? "[ci build]"
-          result.push("> #{item_strip}")
-        # end
+
+  changelog_unrelease = read_changelog(
+    changelog_path: './CHANGELOG.md', # Specify path to CHANGELOG.md
+    section_identifier: '[Unreleased]', # Specify what section to read
+    excluded_markdown_elements: ['-', '###']  # Specify which markdown elements should be excluded
+  )
+  changelog_unrelease = changelog_unrelease.strip
+
+  if changelog_unrelease.length > 0 
+    changelog = changelog_unrelease
+  else
+    previous = ENV['GIT_PREVIOUS_SUCCESSFUL_COMMIT']
+    current = ENV['GIT_COMMIT']
+    puts "PREVIOUS_SUCCESSFUL_COMMIT: " + previous
+    puts "GIT_COMMIT: " + current
+  
+    if previous != nil and current != nil 
+      hash_range = previous + "..." + current
+      changelog = sh("git log --pretty='%B%n' #{hash_range} --no-merges")
+      changelog_arr = changelog.split("\n")
+      result = []
+      for item in changelog_arr do
+        item_strip = item.strip
+        if item_strip.length > 0
+          # if item.downcase.include? "[ci build]"
+            result.push("> #{item_strip}")
+          # end
+        end
       end
+      changelog = result.join("\n\n")
+    else 
+      changelog = "Fixed some bugs.."
     end
-    changelog = result.join("\n\n")
-  else 
-    changelog = "Fixed some bugs.."
   end
 
   puts "changelog with [ci build]: " + changelog
