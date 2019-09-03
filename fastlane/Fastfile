@@ -18,20 +18,20 @@ before_all do |lane, options|
   changelog = ""
   if previous != nil and current != nil 
     hash_range = previous + "..." + current
-    changelog = sh("git log --pretty='> %s%n' #{hash_range} --no-merges")
+    changelog = sh("git log --pretty='%B%n' #{hash_range} --no-merges")
     changelog_arr = changelog.split("\n")
     result = []
     for item in changelog_arr do
-      if item.downcase.include? "[ci build]"
-        result.push(item)
-      end
+      # if item.downcase.include? "[ci build]"
+        result.push("> #{item}")
+      # end
     end
     changelog = result.join("\n")
   else 
     changelog = "Fixed some bugs.."
   end
 
-  puts "change_log_with_build: " + changelog
+  puts "changelog with [ci build]: " + changelog
 
   ENV['CHANGELOG'] = changelog
   ENV['IOS_GROUP'] = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=ff00389c-ece4-4648-9a7e-0f5f50c06a23'
