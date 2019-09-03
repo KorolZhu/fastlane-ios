@@ -38,10 +38,7 @@ before_all do |lane, options|
           markdown_link = item_strip.match(/^\[.*\]\(.*\)$/)
           if markdown_link != nil 
             result.push("> #{item_strip}")
-            break
-          end
-
-          if item_strip.downcase.include? "[ci build]"
+          elsif item_strip.downcase.include? "[ci build]"
               item_strip = item_strip.gsub("[ci build]", "")
               result.push("> #{item_strip}")
           end
