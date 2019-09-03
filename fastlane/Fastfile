@@ -29,7 +29,7 @@ before_all do |lane, options|
         # end
       end
     end
-    changelog = result.join("\n")
+    changelog = result.join("\n\n")
   else 
     changelog = "Fixed some bugs.."
   end
