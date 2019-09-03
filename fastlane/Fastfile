@@ -22,9 +22,12 @@ before_all do |lane, options|
     changelog_arr = changelog.split("\n")
     result = []
     for item in changelog_arr do
-      # if item.downcase.include? "[ci build]"
-        result.push("> #{item}")
-      # end
+      item_strip = item.strip
+      if item_strip.length > 0
+        # if item.downcase.include? "[ci build]"
+          result.push("> #{item_strip}")
+        # end
+      end
     end
     changelog = result.join("\n")
   else 
