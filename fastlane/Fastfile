@@ -58,7 +58,7 @@ before_all do |lane, options|
 
   wechatwork(
     webhook: ENV['IOS_GROUP'],
-    markdown: "**#{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']}) BUILD START** \r\n\n  #{ENV['CHANGELOG']}",
+    markdown: "**#{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']}) BUILD START** \r\n\n branch: ENV["GIT_BRANCH"] \r\n\n #{ENV['CHANGELOG']}",
     mentioned_mobile_list: []
   )
 end
@@ -288,8 +288,8 @@ lane :do_upload_firim do |lane, options|
     sh("git pull Bitbucket #{ENV["GIT_BRANCH"]}")
     push_to_git_remote(
       remote: "Bitbucket",         # optional, default: "origin"
-      local_branch: "develop",  # optional, aliased by "branch", default is set to current branch
-      remote_branch: "develop", # optional, default is set to local_branch
+      local_branch: ENV["GIT_BRANCH"],  # optional, aliased by "branch", default is set to current branch
+      remote_branch: ENV["GIT_BRANCH"], # optional, default is set to local_branch
     )
     
     wechatwork(
