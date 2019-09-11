@@ -187,65 +187,70 @@ lane :do_publish_all do |lane, options|
 end
 
 lane :do_publish do |lane, options|
-  do_update_cocoapods
-  
-  wechatwork(
-    webhook: ENV['IOS_GROUP'],
-    markdown: "**MATCHING**",
-    mentioned_mobile_list: []
-  )
-
-  match
-
-  wechatwork(
-    webhook: ENV['IOS_GROUP'],
-    markdown: "✅**MATCH SUCCEED**",
-    mentioned_mobile_list: []
-  )
-
-  wechatwork(
-    webhook: ENV['IOS_GROUP'],
-    markdown: "**BUILDING**",
-    mentioned_mobile_list: []
-  )
-
-  ENV['DELIVER_IPA_PATH']=gym(
-    export_options: {
-      compileBitcode: true,
-      stripSwiftSymbols: true,
-      uploadBitcode: false,
-      uploadSymbols: false,
-      thinning: "<none>",
-      iCloudContainerEnvironment: "Production"
-    }
-  )
-
-  wechatwork(
-    webhook: ENV['IOS_GROUP'],
-    markdown: "✅**BUILD SUCCEED**",
-    mentioned_mobile_list: []
-  )
-
-  wechatwork(
-    webhook: ENV['IOS_GROUP'],
-    markdown: "**SYMBOLS UPLOADING**",
-    mentioned_mobile_list: []
-  )
-  upload_symbols_to_crashlytics()
-  wechatwork(
-    webhook: ENV['IOS_GROUP'],
-    markdown: "✅**SYMBOLS UPLOADED",
-    mentioned_mobile_list: []
-  )
-
-  do_upload_firim
-  
-  rescue => e
+  begin
+    do_update_cocoapods
+    
     wechatwork(
       webhook: ENV['IOS_GROUP'],
-      markdown: "❌**Build failed**",
+      markdown: "**MATCHING**",
       mentioned_mobile_list: []
-   )
+    )
+
+    match
+
+    wechatwork(
+      webhook: ENV['IOS_GROUP'],
+      markdown: "✅**MATCH SUCCEED**",
+      mentioned_mobile_list: []
+    )
+
+    wechatwork(
+      webhook: ENV['IOS_GROUP'],
+      markdown: "**BUILDING**",
+      mentioned_mobile_list: []
+    )
+
+    ENV['DELIVER_IPA_PATH']=gym(
+      export_options: {
+        compileBitcode: true,
+        stripSwiftSymbols: true,
+        uploadBitcode: false,
+        uploadSymbols: false,
+        thinning: "<none>",
+        iCloudContainerEnvironment: "Production"
+      }
+    )
+
+    wechatwork(
+      webhook: ENV['IOS_GROUP'],
+      markdown: "✅**BUILD SUCCEED**",
+      mentioned_mobile_list: []
+    )
+
+    wechatwork(
+      webhook: ENV['IOS_GROUP'],
+      markdown: "**SYMBOLS UPLOADING**",
+      mentioned_mobile_list: []
+    )
+    upload_symbols_to_crashlytics()
+    wechatwork(
+      webhook: ENV['IOS_GROUP'],
+      markdown: "✅**SYMBOLS UPLOADED",
+      mentioned_mobile_list: []
+    )
+
+    do_upload_firim
+    
+    rescue => e
+      wechatwork(
+        webhook: ENV['IOS_GROUP'],
+        markdown: "❌**Build failed**",
+        mentioned_mobile_list: []
+    )
+    puts e
+    UI.error e
+    UI.user_error!("Whoops, something went wrong")
+  end
 end
 
 lane :do_upload_firim do |lane, options|
