@@ -239,6 +239,13 @@ lane :do_publish do |lane, options|
   )
 
   do_upload_firim
+  
+  rescue => e
+    wechatwork(
+      webhook: ENV['IOS_GROUP'],
+      markdown: "❌**Build failed**",
+      mentioned_mobile_list: []
+   )
 end
 
 lane :do_upload_firim do |lane, options|
