@@ -241,15 +241,15 @@ lane :do_publish do |lane, options|
 
     do_upload_firim
     
-    rescue => e
-      wechatwork(
-        webhook: ENV['IOS_GROUP'],
-        markdown: "❌**Build failed**",
-        mentioned_mobile_list: []
-    )
-    puts e
-    UI.error e
-    UI.user_error!("Whoops, something went wrong")
+#     rescue => e
+#       wechatwork(
+#         webhook: ENV['IOS_GROUP'],
+#         markdown: "❌**Build failed**",
+#         mentioned_mobile_list: []
+#     )
+#     puts e
+#     UI.error e
+#     UI.user_error!("Whoops, something went wrong")
   end
 end
 
