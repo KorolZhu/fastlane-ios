@@ -296,7 +296,7 @@ lane :do_upload_firim do |lane, options|
     branch_name = ENV["GIT_BRANCH"]
     if branch_name.downcase.include? "jenkins"
       puts "build end in ci branch: #{branch_name}"
-    elseif
+    else
       wechatwork(
         webhook: ENV['PROJECT_GROUP'],
         markdown: "**HelloTalk(iOS) #{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']})** \r\n\n  #{ENV['CHANGELOG']}",
