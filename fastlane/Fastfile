@@ -58,6 +58,8 @@ before_all do |lane, options|
   ENV['IOS_GROUP'] = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=ff00389c-ece4-4648-9a7e-0f5f50c06a23'
   ENV['PROJECT_GROUP'] = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=702e4d43-270b-4c1d-9d9c-eadc5ac3651a'
 
+  do_jira_issue
+
   wechatwork(
     webhook: ENV['IOS_GROUP'],
     markdown: "**#{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']}) BUILD START** \r\n\n branch: #{ENV["GIT_BRANCH"]} \r\n\n #{ENV['CHANGELOG']}",
@@ -188,6 +190,18 @@ lane :do_publish_all do |lane, options|
   do_publish
 end
 
+desc "Change jira issue."
+lane :do_jira_issue do |options|
+  jirastatus(
+    log: ENV['CHANGELOG']
+  )
+  wechatwork(
+      webhook: ENV['IOS_GROUP'],
+      markdown: "**auto jira status succeed**",
+      mentioned_mobile_list: []
+    )
+end
+
 lane :do_publish do |lane, options|
   begin
     do_update_cocoapods
@@ -249,6 +263,8 @@ lane :do_publish do |lane, options|
     )
 
     do_upload_firim
+
+    do_jira_issue
     
     rescue => e
       wechatwork(
