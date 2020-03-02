@@ -340,6 +340,7 @@ lane :do_upload_firim do |lane, options|
       remote: "Bitbucket",         # optional, default: "origin"
       local_branch: ENV["GIT_BRANCH"],  # optional, aliased by "branch", default is set to current branch
       remote_branch: ENV["GIT_BRANCH"], # optional, default is set to local_branch
+      tags: false
     )
     
     wechatwork(
