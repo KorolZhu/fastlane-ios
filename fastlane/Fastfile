@@ -190,14 +190,18 @@ end
 
 desc "Change jira issue."
 lane :do_jira_issue do |options|
-  jirastatus(
-    log: ENV['CHANGELOG']
-  )
-  wechatwork(
-      webhook: ENV['IOS_GROUP'],
-      markdown: "**auto jira status succeed**",
-      mentioned_mobile_list: []
+  begin
+    jirastatus(
+      log: ENV['CHANGELOG']
     )
+    wechatwork(
+        webhook: ENV['IOS_GROUP'],
+        markdown: "**auto jira status succeed**",
+        mentioned_mobile_list: []
+    )
+  rescue => ex
+    UI.error("Something went wrong with jira status: #{ex}")
+  end
 end
 
 lane :do_publish do |lane, options|
