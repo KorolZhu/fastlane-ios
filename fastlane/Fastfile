@@ -55,7 +55,7 @@ before_all do |lane, options|
   puts "changelog with [ci build]: " + changelog
 
   ENV['CHANGELOG'] = changelog
-  ENV['IOS_GROUP'] = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=ff00389c-ece4-4648-9a7e-0f5f50c06a23'
+  ENV['IOS_GROUP'] = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=7ec0058c-10f1-4100-b544-0696af5ea30c'
   ENV['PROJECT_GROUP'] = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=702e4d43-270b-4c1d-9d9c-eadc5ac3651a'
 
   wechatwork(
