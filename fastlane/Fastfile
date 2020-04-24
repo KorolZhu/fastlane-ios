@@ -326,7 +326,7 @@ lane :do_upload_firim do |lane, options|
       wechatwork(
         webhook: ENV['PROJECT_GROUP'],
         markdown: "**HelloTalk(iOS) #{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']})** \r\n\n  #{ENV['CHANGELOG']}",
-        mentioned_mobile_list: ["18779144521", "18126009603"]
+        mentioned_mobile_list: ["15986673013", "18779144521", "18126009603"]
       )
     end
     
