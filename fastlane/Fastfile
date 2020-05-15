@@ -292,18 +292,17 @@ lane :do_upload_firim do |lane, options|
       mentioned_mobile_list: []
     )
     
-    # firim(
-    #   app_version: ENV['VERSIONNAME'],
-    #   app_build_version: ENV['VERSIONCODE'],
-    #   app_changelog: change_log
-    # )
+    firim(
+      app_version: ENV['VERSIONNAME'],
+      app_build_version: ENV['VERSIONCODE'],
+      app_changelog: change_log
+    )
 
     pgyer(
       api_key: "c9c82e19cdbb6a3c97348d0cae754c2e",
       user_key: "c61b93206310e40f5868c36b9777c7ab",
       update_description: change_log
     )
-
 
     # send_e_mail(
     #   stmp_server: "smtp.exmail.qq.com",
