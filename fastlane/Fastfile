@@ -256,7 +256,8 @@ lane :do_publish do |lane, options|
       mentioned_mobile_list: []
     )
     upload_symbols_to_crashlytics(
-      dsym_path: "#{ENV['BUILD_DIRECTORY']}/IPA/HelloTalk_Binary.app.dSYM.zip"
+      dsym_path: "#{ENV['BUILD_DIRECTORY']}/IPA/HelloTalk_Binary.app.dSYM.zip",
+      gsp_path: "./HelloTalk_Binary/Resources/Plist/GoogleService-Info.plist"
     )
     wechatwork(
       webhook: ENV['IOS_GROUP'],
