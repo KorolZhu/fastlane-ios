@@ -10,6 +10,9 @@ before_all do |lane, options|
   ENV['VERSIONNAME'] ||= get_version_number
   ENV['VERSIONCODE'] ||= increment_build_number
 
+  ENV["FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT"] = "180"
+  ENV["FASTLANE_XCODE_LIST_TIMEOUT"] = "180"
+
   ENV['BUILD_DIRECTORY'] = "./build/#{ENV['VERSIONNAME']}_#{ENV['VERSIONCODE']}"
 
   changelog = ""
