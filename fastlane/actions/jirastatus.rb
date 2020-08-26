@@ -42,7 +42,7 @@ module Fastlane
 
           request = Net::HTTP::Post.new(uri.request_uri, header)
           request.body = workflow_id.to_json
-          request.basic_auth('jenkins', 'jenkinsauto')
+          request.basic_auth('jenkins', 'JeN%@K8s4HT')
 
           response = http.request(request)
           puts "Change workflow status code: #{response.code}"
@@ -67,7 +67,7 @@ module Fastlane
 
           #Get assignee info.
           request = Net::HTTP::Get.new(uri.request_uri, header)
-          request.basic_auth('jenkins', 'jenkinsauto')
+          request.basic_auth('jenkins', 'JeN%@K8s4HT')
 
           response = http.request(request)
           full_json = JSON.parse(response.body)
@@ -145,7 +145,7 @@ module Fastlane
           request = Net::HTTP::Put.new(uri.request_uri, header)
           request.body = assignee.to_json
           puts "assignee josn: #{request.body}"
-          request.basic_auth('jenkins', 'jenkinsauto')
+          request.basic_auth('jenkins', 'JeN%@K8s4HT')
 
           response = http.request(request)
 
