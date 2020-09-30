@@ -427,17 +427,17 @@ end
 
 lane :sendDeveloperMessage do |options|
   title = options[:title]
-  if title == nil {
+  if title.nil? {
     title = ""
   }
 
   subTitle = options[:subTitle]
-  if subTitle == nil {
+  if subTitle.nil? {
     subTitle = ""
   }
 
   contents = options[:contents]
-  if contents == nil {
+  if contents.nil? {
     contents = ""
   }
 
