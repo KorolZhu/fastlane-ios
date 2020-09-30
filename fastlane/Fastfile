@@ -434,11 +434,7 @@ lane :sendDeveloperMessage do |options|
   puts(options)
 
   wechatwork(
-    title: title,
-    subTitle: subTitle,
-    contents: contents,
-    webhook: ENV['IOS_GROUP'],
-    mentioned_mobile_list: []
+    title: title
   )
 end
 
