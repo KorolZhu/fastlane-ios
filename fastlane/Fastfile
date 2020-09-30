@@ -427,14 +427,29 @@ end
 
 lane :sendDeveloperMessage do |options|
   title = options[:title]
+  if title == nil {
+    title = ""
+  }
+
   subTitle = options[:subTitle]
+  if subTitle == nil {
+    subTitle = ""
+  }
+
   contents = options[:contents]
+  if contents == nil {
+    contents = ""
+  }
 
   puts("44444444444")
   puts(options)
 
   wechatwork(
-    title: title
+    title: title,
+    subTitle: subTitle,
+    contents: contents,
+    webhook: ENV['IOS_GROUP'],
+    mentioned_mobile_list: []
   )
 end
 
