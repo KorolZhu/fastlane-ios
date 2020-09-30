@@ -432,13 +432,13 @@ lane :sendDeveloperMessage do |options|
   end
 
   subTitle = options[:subTitle]
-  if subTitle.nil
+  if subTitle.nil?
     subTitle = ""
   end
 
   contents = options[:contents]
   if contents.nil? 
-    subTitle = ""
+    contents = ""
   end
 
   puts("44444444444")
