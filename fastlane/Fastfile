@@ -453,18 +453,18 @@ lane :sendDeveloperMessage do |options|
   )
 end
 
-lane :sendProjectMessage do |options|
-  title = options[:title]
-  subTitle = options[:subTitle]
-  contents = options[:contents]
+# lane :sendProjectMessage do |options|
+#   title = options[:title]
+#   subTitle = options[:subTitle]
+#   contents = options[:contents]
 
-  puts(options)
+#   puts(options)
 
-  wechatwork(
-    title: title,
-    subTitle: subTitle,
-    contents: contents,
-    webhook: ENV['PROJECT_GROUP'],
-    mentioned_mobile_list: []
-  )
-end
+#   wechatwork(
+#     title: title,
+#     subTitle: subTitle,
+#     contents: contents,
+#     webhook: ENV['PROJECT_GROUP'],
+#     mentioned_mobile_list: []
+#   )
+# end
