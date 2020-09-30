@@ -4,24 +4,25 @@ module Fastlane
       def self.run(params)
         options = params || {}
 
-        # [:title, :subTitle, :contents, :webhook, :mentioned_mobile_list].each do |key|
-        #   UI.user_error!("No #{key} given.") unless options[key]
-        # end
+        [:title, :subTitle, :contents, :webhook, :mentioned_mobile_list].each do |key|
+          UI.user_error!("No #{key} given.") unless options[key]
+        end
 
-        # title = options[:title]
-        # subTitle = options[:subTitle]
-        # contents = options[:contents]
-        # webhook = options[:webhook]
-        # mentioned_mobile_list = options[:mentioned_mobile_list]
-
-        title = "HelloTalk(iOS) 4.1.5 (28)"
-        subTitle = "branch: develop/main"
-        changelog = 
-        "找语伴页面部分多语言更新
-        vip banner track once埋点
-        [隐身按钮可点击区域调大至48pt](https://jira.hellotalk8.com/jira/browse/IOS-3382)
-        [会员进入搜索页点击gender，出现VIP图标](https://jira.hellotalk8.com/jira/browse/IOS-3402)"
+        title = options[:title]
+        subTitle = options[:subTitle]
+        changelog = options[:contents]
         contents = changelog.split("\n")
+        webhook = options[:webhook]
+        mentioned_mobile_list = options[:mentioned_mobile_list]
+
+        # title = "HelloTalk(iOS) 4.1.5 (28)"
+        # subTitle = "branch: develop/main"
+        # changelog = 
+        # "找语伴页面部分多语言更新
+        # vip banner track once埋点
+        # [隐身按钮可点击区域调大至48pt](https://jira.hellotalk8.com/jira/browse/IOS-3382)
+        # [会员进入搜索页点击gender，出现VIP图标](https://jira.hellotalk8.com/jira/browse/IOS-3402)"
+        # contents = changelog.split("\n")
 
         UI.success("5555555")
         UI.success(params)
