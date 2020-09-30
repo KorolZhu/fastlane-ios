@@ -430,6 +430,9 @@ lane :sendDeveloperMessage do |options|
   subTitle = options[:subTitle]
   contents = options[:contents]
 
+  puts("44444444444")
+  puts(options)
+
   wechatwork(
     title: title,
     subTitle: subTitle,
@@ -443,6 +446,8 @@ lane :sendProjectMessage do |options|
   title = options[:title]
   subTitle = options[:subTitle]
   contents = options[:contents]
+
+  puts(options)
 
   wechatwork(
     title: title,
