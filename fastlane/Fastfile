@@ -42,14 +42,14 @@ before_all do |lane, options|
         if item_strip.length > 0
           markdown_link = item_strip.match(/^\[.*\]\(.*\)$/)
           if markdown_link != nil 
-            result.push("> #{item_strip}")
+            result.push("#{item_strip}")
           elsif item_strip.downcase.include? "[ci build]"
               item_strip = item_strip.gsub(/\[ci build\]/i, "")
-              result.push("> #{item_strip}")
+              result.push("#{item_strip}")
           end
         end
       end
-      changelog = result.join("\n\n")
+      changelog = result.join("\n")
     else 
       changelog = "Fixed some bugs.."
     end
@@ -58,14 +58,18 @@ before_all do |lane, options|
   puts "changelog with [ci build]: " + changelog
 
   ENV['CHANGELOG'] = changelog
-  ENV['IOS_GROUP'] = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=7ec0058c-10f1-4100-b544-0696af5ea30c'
-  ENV['PROJECT_GROUP'] = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=702e4d43-270b-4c1d-9d9c-eadc5ac3651a'
+  ENV['IOS_GROUP'] = 'https://open.feishu.cn/open-apis/bot/v2/hook/2b666371-e2b8-464b-a19a-19de6a8b1631'
+  ENV['PROJECT_GROUP'] = 'https://open.feishu.cn/open-apis/bot/v2/hook/e48b50e0-9616-4406-83b9-6785d2c07940'
 
-  wechatwork(
-    webhook: ENV['IOS_GROUP'],
-    markdown: "**#{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']}) BUILD START** \r\n\n branch: #{ENV["GIT_BRANCH"]} \r\n\n #{ENV['CHANGELOG']}",
-    mentioned_mobile_list: []
-  )
+  title = "#{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']}) BUILD START"
+  subTitle = "branch: #{ENV["GIT_BRANCH"]}"
+  contents = changelog
+  sendDeveloperMessage(
+    {
+      "title": title,
+      "subTitle": subTitle,
+      "contents": contents}
+    )
 end
 
 before_each do |lane, options|
@@ -127,10 +131,12 @@ end
 
 lane :do_update_cocoapods do |lane, options|
   if files_matching(pattern: "Podfile") != nil
-    
+
     wechatwork(
+      title: "",
+      subTitle: "POD INSTALLING",
+      contents: "",
       webhook: ENV['IOS_GROUP'],
-      markdown: "**POD INSTALLING**",
       mentioned_mobile_list: []
     )
    
@@ -149,19 +155,25 @@ lane :do_update_cocoapods do |lane, options|
           use_bundle_exec: true,
           podfile: './Podfile',
           error_callback: lambda { |result|	
+            
             wechatwork(
+              title: "",
+              subTitle: "❌ POD INSTALL FAILED",
+              contents: "",
               webhook: ENV['IOS_GROUP'],
-              markdown: "❌**POD INSTALL FAILED**",
               mentioned_mobile_list: []
             )
+
           }
         )
       }
     )
 
     wechatwork(
+      title: "",
+      subTitle: "✅ POD INSTALL SUCCEED",
+      contents: "",
       webhook: ENV['IOS_GROUP'],
-      markdown: "✅**POD INSTALL SUCCEED",
       mentioned_mobile_list: []
     )
 
@@ -197,10 +209,13 @@ lane :do_jira_issue do |options|
     jirastatus(
       log: ENV['CHANGELOG']
     )
+
     wechatwork(
-        webhook: ENV['IOS_GROUP'],
-        markdown: "**auto jira status succeed**",
-        mentioned_mobile_list: []
+      title: "",
+      subTitle: "✅ auto jira status succeed",
+      contents: "",
+      webhook: ENV['IOS_GROUP'],
+      mentioned_mobile_list: []
     )
   rescue => ex
     UI.error("Something went wrong with jira status: #{ex}")
@@ -210,24 +225,30 @@ end
 lane :do_publish do |lane, options|
   begin
     do_update_cocoapods
-    
+
     wechatwork(
+      title: "",
+      subTitle: "MATCHING",
+      contents: "",
       webhook: ENV['IOS_GROUP'],
-      markdown: "**MATCHING**",
       mentioned_mobile_list: []
     )
 
     match
 
     wechatwork(
+      title: "",
+      subTitle: "✅ MATCH SUCCEED",
+      contents: "",
       webhook: ENV['IOS_GROUP'],
-      markdown: "✅**MATCH SUCCEED**",
       mentioned_mobile_list: []
     )
 
     wechatwork(
+      title: "",
+      subTitle: "BUILDING",
+      contents: "",
       webhook: ENV['IOS_GROUP'],
-      markdown: "**BUILDING**",
       mentioned_mobile_list: []
     )
 
@@ -248,8 +269,10 @@ lane :do_publish do |lane, options|
     )
 
     wechatwork(
+      title: "",
+      subTitle: "BUILD SUCCEED",
+      contents: "",
       webhook: ENV['IOS_GROUP'],
-      markdown: "✅**BUILD SUCCEED**",
       mentioned_mobile_list: []
     )
 
@@ -400,4 +423,32 @@ error do |lane, exception, options|
     puts "Hi :)"
   end
   UI.message(exception.message)
+end
+
+lane :sendDeveloperMessage do |options|
+  title = options[:title]
+  subTitle = options[:subTitle]
+  contents = options[:contents]
+
+  wechatwork(
+    title: title,
+    subTitle: subTitle,
+    contents: contents,
+    webhook: ENV['IOS_GROUP'],
+    mentioned_mobile_list: []
+  )
+end
+
+lane :sendProjectMessage do |options|
+  title = options[:title]
+  subTitle = options[:subTitle]
+  contents = options[:contents]
+
+  wechatwork(
+    title: title,
+    subTitle: subTitle,
+    contents: contents,
+    webhook: ENV['PROJECT_GROUP'],
+    mentioned_mobile_list: []
+  )
 end
