@@ -273,7 +273,7 @@ lane :do_upload_firim do |lane, options|
     if branch_name.downcase.include? "jenkins"
       puts "build end in ci branch: #{branch_name}"
     else
-      title = "**HelloTalk(iOS) #{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']})"
+      title = "HelloTalk(iOS) #{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']})"
       contents = "#{ENV['CHANGELOG']}"
       sendDeveloperMessage({"title": title, "contents": contents, "toProject": true})
     end
@@ -325,7 +325,7 @@ after_each do |lane, options|
 end
 
 after_all do |lane, options|
-  sendDeveloperMessage({"title": "BUILD END"})
+  sendDeveloperMessage({"subTitle": "BUILD END"})
 end
 
 error do |lane, exception, options|
