@@ -68,8 +68,8 @@ before_all do |lane, options|
     {
       "title": title,
       "subTitle": subTitle,
-      "contents": contents}
-    )
+      "contents": contents
+    }
   )
 end
 
