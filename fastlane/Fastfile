@@ -64,12 +64,12 @@ before_all do |lane, options|
   title = "#{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']}) BUILD START"
   subTitle = "branch: #{ENV["GIT_BRANCH"]}"
   contents = changelog
-  sendDeveloperMessage(
-    
-      title,
-      subTitle,
-      contents
-    
+  sendDeveloperMessage( 
+    {
+      "title": title,
+      "subTitle": subTitle,
+      "contents": contents}
+    )
   )
 end
 
@@ -275,7 +275,7 @@ lane :do_upload_firim do |lane, options|
     else
       title = "**HelloTalk(iOS) #{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']})"
       contents = "#{ENV['CHANGELOG']}"
-      sendProjectMessage({"title": title, "contents": contents})
+      sendDeveloperMessage({"title": title, "contents": contents, "toProject": true})
     end
     
     commit_version_bump(
@@ -335,54 +335,38 @@ error do |lane, exception, options|
   UI.message(exception.message)
 end
 
-def sendDeveloperMessage(title, subTitle, contents)
-  # title = options[:title]
+def sendDeveloperMessage(params)
+  title = params[:title]
   if title.nil? 
     title = ""
   end
 
-  # subTitle = options[:subTitle]
+  subTitle = params[:subTitle]
   if subTitle.nil?
     subTitle = ""
   end
 
-  # contents = options[:contents]
+  contents = params[:contents]
   if contents.nil? 
     contents = ""
   end
+
+  toProject = params[:toProject]
+  if toProject.nil? 
+    toProject = false
+  end
+
+  webhook = ENV['IOS_GROUP']
+  if toProject
+    webhook = ENV['PROJECT_GROUP']
+  end
+     
 
   wechatwork(
     title: title,
     subTitle: subTitle,
     contents: contents,
-    webhook: ENV['IOS_GROUP'],
-    mentioned_mobile_list: []
-  )
-end
-
-lane :sendProjectMessage do |options|
-  title = options[:title]
-  if title.nil? 
-    title = ""
-  end
-
-  subTitle = options[:subTitle]
-  if subTitle.nil?
-    subTitle = ""
-  end
-
-  contents = options[:contents]
-  if contents.nil? 
-    contents = ""
-  end
-
-  puts(options)
-
-  wechatwork(
-    title: title,
-    subTitle: subTitle,
-    contents: contents,
-    webhook: ENV['PROJECT_GROUP'],
+    webhook: webhook,
     mentioned_mobile_list: []
   )
 end
