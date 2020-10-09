@@ -68,8 +68,9 @@ before_all do |lane, options|
     {
       "title": title,
       "subTitle": subTitle,
-      "contents": contents}
-    )
+      "contents": contents
+    }
+  )
 end
 
 before_each do |lane, options|
@@ -132,13 +133,7 @@ end
 lane :do_update_cocoapods do |lane, options|
   if files_matching(pattern: "Podfile") != nil
 
-    wechatwork(
-      title: "",
-      subTitle: "POD INSTALLING",
-      contents: "",
-      webhook: ENV['IOS_GROUP'],
-      mentioned_mobile_list: []
-    )
+    sendDeveloperMessage({"subTitle": "POD INSTALLING"})
    
     cocoapods(
       repo_update: true,
@@ -156,25 +151,12 @@ lane :do_update_cocoapods do |lane, options|
           podfile: './Podfile',
           error_callback: lambda { |result|	
             
-            wechatwork(
-              title: "",
-              subTitle: "❌ POD INSTALL FAILED",
-              contents: "",
-              webhook: ENV['IOS_GROUP'],
-              mentioned_mobile_list: []
-            )
+
+          sendDeveloperMessage({"subTitle": "❌ POD INSTALL FAILED"})
 
           }
         )
       }
-    )
-
-    wechatwork(
-      title: "",
-      subTitle: "✅ POD INSTALL SUCCEED",
-      contents: "",
-      webhook: ENV['IOS_GROUP'],
-      mentioned_mobile_list: []
     )
 
   end
@@ -209,14 +191,6 @@ lane :do_jira_issue do |options|
     jirastatus(
       log: ENV['CHANGELOG']
     )
-
-    wechatwork(
-      title: "",
-      subTitle: "✅ auto jira status succeed",
-      contents: "",
-      webhook: ENV['IOS_GROUP'],
-      mentioned_mobile_list: []
-    )
   rescue => ex
     UI.error("Something went wrong with jira status: #{ex}")
   end
@@ -226,31 +200,11 @@ lane :do_publish do |lane, options|
   begin
     do_update_cocoapods
 
-    wechatwork(
-      title: "",
-      subTitle: "MATCHING",
-      contents: "",
-      webhook: ENV['IOS_GROUP'],
-      mentioned_mobile_list: []
-    )
+    sendDeveloperMessage({"subTitle": "MATCHING"})
 
     match
 
-    wechatwork(
-      title: "",
-      subTitle: "✅ MATCH SUCCEED",
-      contents: "",
-      webhook: ENV['IOS_GROUP'],
-      mentioned_mobile_list: []
-    )
-
-    wechatwork(
-      title: "",
-      subTitle: "BUILDING",
-      contents: "",
-      webhook: ENV['IOS_GROUP'],
-      mentioned_mobile_list: []
-    )
+    sendDeveloperMessage({"subTitle": "BUILDING"})
 
     ENV['DELIVER_IPA_PATH']=gym(
       export_options: {
@@ -268,27 +222,11 @@ lane :do_publish do |lane, options|
 
     )
 
-    wechatwork(
-      title: "",
-      subTitle: "BUILD SUCCEED",
-      contents: "",
-      webhook: ENV['IOS_GROUP'],
-      mentioned_mobile_list: []
-    )
+    sendDeveloperMessage({"subTitle": "SYMBOLS UPLOADING"})
 
-    wechatwork(
-      webhook: ENV['IOS_GROUP'],
-      markdown: "**SYMBOLS UPLOADING**",
-      mentioned_mobile_list: []
-    )
     upload_symbols_to_crashlytics(
       dsym_path: "#{ENV['BUILD_DIRECTORY']}/IPA/HelloTalk_Binary.app.dSYM.zip",
       gsp_path: "./HelloTalk_Binary/Resources/Plist/GoogleService-Info.plist"
-    )
-    wechatwork(
-      webhook: ENV['IOS_GROUP'],
-      markdown: "✅**SYMBOLS UPLOADED",
-      mentioned_mobile_list: []
     )
 
     do_upload_firim
@@ -296,15 +234,11 @@ lane :do_publish do |lane, options|
     do_jira_issue
     
     rescue => e
-      wechatwork(
-        webhook: ENV['IOS_GROUP'],
-        markdown: "❌**Build failed**",
-        mentioned_mobile_list: []
-    )
+      sendDeveloperMessage({"subTitle": "❌ Build failed"})
     puts e
     UI.error e
     UI.user_error!("Whoops, something went wrong")
-  end
+    end
 end
 
 lane :do_upload_firim do |lane, options|
@@ -312,13 +246,9 @@ lane :do_upload_firim do |lane, options|
     change_log = "[#{ENV['GIT_BRANCH']}]\r\n---\r\n" + ENV['CHANGELOG']
     
     puts "firim_changlog: #{change_log}"
-    
-    wechatwork(
-      webhook: ENV['IOS_GROUP'],
-      markdown: "**UPLOADING TO FIR**",
-      mentioned_mobile_list: []
-    )
-    
+
+    sendDeveloperMessage({"subTitle": "UPLOADING TO FIR"})
+
     firim(
       app_version: ENV['VERSIONNAME'],
       app_build_version: ENV['VERSIONCODE'],
@@ -338,22 +268,14 @@ lane :do_upload_firim do |lane, options|
     #   subject: "default",
     #   message_body: "Hi! @issenn \r\n A new app upload success \r\n#{ENV['CHANGELOG']}"
     # )
-
-    wechatwork(
-      webhook: ENV['IOS_GROUP'],
-      markdown: "✅**UPLOAD TO FIR SUCCEED**",
-      mentioned_mobile_list: []
-    )
     
     branch_name = ENV["GIT_BRANCH"]
     if branch_name.downcase.include? "jenkins"
       puts "build end in ci branch: #{branch_name}"
     else
-      wechatwork(
-        webhook: ENV['PROJECT_GROUP'],
-        markdown: "**HelloTalk(iOS) #{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']})** \r\n\n  #{ENV['CHANGELOG']}",
-        mentioned_mobile_list: ["15986673013", "18779144521", "18126009603"]
-      )
+      title = "**HelloTalk(iOS) #{ENV['VERSIONNAME']} (#{ENV['VERSIONCODE']})"
+      contents = "#{ENV['CHANGELOG']}"
+      sendProjectMessage({"title": title, "contents": contents})
     end
     
     commit_version_bump(
@@ -372,13 +294,7 @@ lane :do_upload_firim do |lane, options|
       remote_branch: ENV["GIT_BRANCH"], # optional, default is set to local_branch
       tags: false
     )
-    
-    wechatwork(
-      webhook: ENV['IOS_GROUP'],
-      markdown: "✅**increment build number and pushed**",
-      mentioned_mobile_list: []
-    )
-    
+        
     $upload_retry=0
   rescue => ex
     $upload_retry += 1
@@ -386,11 +302,9 @@ lane :do_upload_firim do |lane, options|
       do_upload_firim
     else
       # raise ex
-      wechatwork(
-        webhook: ENV['IOS_GROUP'],
-        markdown: "❌**UPLOAD TO FIR FAILED",
-        mentioned_mobile_list: []
-      )
+
+      sendDeveloperMessage({"title": "❌ UPLOAD TO FIR FAILED"})
+
       puts ex
     end
   end
@@ -411,11 +325,7 @@ after_each do |lane, options|
 end
 
 after_all do |lane, options|
-   wechatwork(
-    webhook: ENV['IOS_GROUP'],
-    markdown: "**BUILD END**",
-    mentioned_mobile_list: []
-  )
+  sendDeveloperMessage({"title": "BUILD END"})
 end
 
 error do |lane, exception, options|
@@ -441,9 +351,6 @@ lane :sendDeveloperMessage do |options|
     contents = ""
   end
 
-  puts("44444444444")
-  puts(options)
-
   wechatwork(
     title: title,
     subTitle: subTitle,
@@ -455,8 +362,19 @@ end
 
 lane :sendProjectMessage do |options|
   title = options[:title]
+  if title.nil? 
+    title = ""
+  end
+
   subTitle = options[:subTitle]
+  if subTitle.nil?
+    subTitle = ""
+  end
+
   contents = options[:contents]
+  if contents.nil? 
+    contents = ""
+  end
 
   puts(options)
 
