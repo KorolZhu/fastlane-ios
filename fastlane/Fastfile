@@ -65,11 +65,11 @@ before_all do |lane, options|
   subTitle = "branch: #{ENV["GIT_BRANCH"]}"
   contents = changelog
   sendDeveloperMessage(
-    {
-      "title": title,
-      "subTitle": subTitle,
-      "contents": contents
-    }
+    
+      title,
+      subTitle,
+      contents
+    
   )
 end
 
@@ -335,18 +335,18 @@ error do |lane, exception, options|
   UI.message(exception.message)
 end
 
-lane :sendDeveloperMessage do |options|
-  title = options[:title]
+def sendDeveloperMessage(title, subTitle, contents)
+  # title = options[:title]
   if title.nil? 
     title = ""
   end
 
-  subTitle = options[:subTitle]
+  # subTitle = options[:subTitle]
   if subTitle.nil?
     subTitle = ""
   end
 
-  contents = options[:contents]
+  # contents = options[:contents]
   if contents.nil? 
     contents = ""
   end
