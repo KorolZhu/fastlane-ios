@@ -10,19 +10,54 @@ module Fastlane
 
         log = options[:log]
 
+        people = ["luke@hellotalk.com", "sunshine@hellotalk.com", "caddie@hellotalk.com", "lucia@hellotalk.com"]
+
         if log != nil
           log_arr = log.split("\n")
           for item in log_arr do
               item_strip = item.strip
             if item_strip.include? "https://jira.hellotalk8.com/jira/browse/"
-              # issue = item_strip.gsub(/.*\(https:\/\/jira.hellotalk8.com\/jira\/browse\//, '{"issue": "').gsub(/\)/, '') + '"}'
               issue = item_strip.gsub(/.*https:\/\/jira.hellotalk8.com\/jira\/browse\//, '').gsub(/\)/, '')
               puts issue
-              self.change_assignee(issue)
-              # self.change_workflow_status(issue)
+              p = self.change_assignee(issue)
+              if p.empty? == false 
+                people = people + p
+              end
             end
           end
         end
+
+        people = people.uniq
+
+        puts("people ---- ")
+        puts(people)
+
+        require 'json'
+        text = File.read(Dir.pwd + "/fastlane/userid.json")
+        useidJson = JSON.parse(text)
+
+        users = []
+
+        for p in people do 
+          userid = useidJson[p]
+          if userid 
+            users << userid
+          end
+        end
+
+        puts("users ---- ")
+        puts(users)
+
+        if users.length > 0 
+          other_action.wechatwork(
+            title: "",
+            subTitle: "",
+            contents: "",
+            webhook: "https://open.feishu.cn/open-apis/bot/v2/hook/e48b50e0-9616-4406-83b9-6785d2c07940",
+            mentioned_mobile_list: users
+            )
+        end
+        
       end
 
       def self.change_workflow_status(issue, workflow)
@@ -61,6 +96,8 @@ module Fastlane
         uri = URI(url)
         header = {"Content-Type": "application/json"}
 
+        people = []
+
         Net::HTTP.start(uri.host, uri.port,
           :use_ssl => uri.scheme == 'https', 
           :verify_mode => OpenSSL::SSL::VERIFY_NONE) do |http|
@@ -72,6 +109,62 @@ module Fastlane
           response = http.request(request)
           full_json = JSON.parse(response.body)
           puts "Get assignee info status code: #{response.code}"
+
+
+          fields = full_json['fields']
+
+          tester = fields["customfield_10600"]["emailAddress"]
+          if tester 
+            people << tester
+          end
+
+          creator = fields["creator"]["emailAddress"]
+          if creator 
+            people << creator
+          end
+
+          watchers = fields["customfield_10301"]
+          for item in watchers do
+            p = item["emailAddress"]
+            if p 
+              people << p
+            end
+          end
+
+          productManager = fields["customfield_10521"]["emailAddress"]
+          if productManager 
+            people << productManager
+          end
+
+          assignee = fields["assignee"]["emailAddress"]
+          if assignee 
+            people << assignee
+          end
+
+          designer = fields["customfield_10510"]["emailAddress"]
+          if designer 
+            people << designer
+          end
+
+          ios = fields["customfield_10511"]["emailAddress"]
+          if ios 
+            people << ios
+          end
+
+          service = fields["customfield_10513"]["emailAddress"]
+          if service 
+            people << service
+          end
+
+          datap = fields["customfield_10514"]["emailAddress"]
+          if datap 
+            people << datap
+          end
+
+          backend = fields["customfield_10519"]["emailAddress"]
+          if backend 
+            people << backend
+          end
 
           if full_json['fields']['issuetype']['name'] == "Story"
             puts "Issue #{issue} type is: Story."
@@ -152,6 +245,9 @@ module Fastlane
           puts "Change assignee to #{user}."
           puts "Set assignee status code: #{response.code}"
         end
+
+        return people
+
       end
 
       def self.description

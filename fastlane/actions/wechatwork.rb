@@ -27,12 +27,23 @@ module Fastlane
         # mentioned_mobile_list = []
 
         json = self.buildParams(title, subTitle, contents)
-        self.post_to_wechat(webhook, json)
+        if json.nil? == false 
+          self.post_to_wechat(webhook, json)
+        end
 
+        # @人
         if mentioned_mobile_list.empty? == false
+          require 'json'
+          phone_list = "{\"zh_cn\":{\"content\":[["
+
+          for i in mentioned_mobile_list
+             phone_list += "{\"tag\":\"at\",\"user_id\":\""+i.to_s+"\"},"
+          end
+          phone_list = phone_list[0,phone_list.length-1] + "]]}}"
+          phone_list = JSON.parse(phone_list)
           params = {}
-          params["msgtype"] = "text"
-          params["text"] = {"content": "", "mentioned_mobile_list": mentioned_mobile_list}
+          params["msg_type"] = "post"
+          params["content"] = {"post": phone_list}
           self.post_to_wechat(webhook, params)
         end
 
@@ -41,6 +52,10 @@ module Fastlane
       def self.buildParams(title, subTitle, contents) 
         title = title.strip
         subTitle = subTitle.strip
+
+        if title.length == 0 and subTitle.length == 0 and contents.length == 0 
+          return nil
+        end
 
         zh_cn = {}
         if title.length > 0 
