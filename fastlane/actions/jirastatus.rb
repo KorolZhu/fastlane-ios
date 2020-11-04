@@ -34,7 +34,7 @@ module Fastlane
         puts(people)
 
         require 'json'
-        text = File.read(Dir.pwd + "/fastlane/userid.json")
+        text = File.read("~/.cache/fastlane/imported" + "/fastlane-ios/fastlane/userid.json")
         useidJson = JSON.parse(text)
 
         users = []
