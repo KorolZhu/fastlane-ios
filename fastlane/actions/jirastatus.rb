@@ -8,6 +8,7 @@ module Fastlane
           UI.user_error!("No #{key} given.") unless options[key]
         end
 
+        # [xxxx](https://jira.hellotalk8.com/jira/browse/IOS-3591)
         log = options[:log]
 
         people = ["luke@hellotalk.com", "sunshine@hellotalk.com", "caddie@hellotalk.com", "lucia@hellotalk.com"]
@@ -47,6 +48,9 @@ module Fastlane
 
         puts("users ---- ")
         puts(users)
+
+        # test: https://open.feishu.cn/open-apis/bot/v2/hook/c0b05de8-428b-4288-99ce-67a54e280e1c
+        # Project: https://open.feishu.cn/open-apis/bot/v2/hook/e48b50e0-9616-4406-83b9-6785d2c07940
 
         if users.length > 0 
           other_action.wechatwork(
@@ -113,14 +117,20 @@ module Fastlane
 
           fields = full_json['fields']
 
-          tester = fields["customfield_10600"]["emailAddress"]
+          tester = fields["customfield_10600"]
           if tester 
-            people << tester
+            email = tester["emailAddress"]
+            if email 
+              people << email
+          end
           end
 
-          creator = fields["creator"]["emailAddress"]
+          creator = fields["creator"]
           if creator 
-            people << creator
+            email = creator["emailAddress"]
+            if email 
+              people << email
+          end
           end
 
           watchers = fields["customfield_10301"]
@@ -131,39 +141,60 @@ module Fastlane
             end
           end
 
-          productManager = fields["customfield_10521"]["emailAddress"]
+          productManager = fields["customfield_10521"]
           if productManager 
-            people << productManager
+            email = productManager["emailAddress"]
+            if email 
+              people << email
+          end
           end
 
-          assignee = fields["assignee"]["emailAddress"]
+          assignee = fields["assignee"]
           if assignee 
-            people << assignee
+            email = assignee["emailAddress"]
+            if email 
+              people << email
+          end
           end
 
-          designer = fields["customfield_10510"]["emailAddress"]
+          designer = fields["customfield_10510"]
           if designer 
-            people << designer
+            email = designer["emailAddress"]
+            if email 
+              people << email
+            end
           end
 
-          ios = fields["customfield_10511"]["emailAddress"]
+          ios = fields["customfield_10511"]
           if ios 
-            people << ios
+            email = ios["emailAddress"]
+            if email 
+              people << email
+            end
           end
 
-          service = fields["customfield_10513"]["emailAddress"]
+          service = fields["customfield_10513"]
           if service 
-            people << service
+            email = service["emailAddress"]
+            if email 
+              people << email
+            end
           end
 
-          datap = fields["customfield_10514"]["emailAddress"]
+          datap = fields["customfield_10514"]
           if datap 
-            people << datap
+            email = datap["emailAddress"]
+            if email 
+              people << email
+            end
           end
 
-          backend = fields["customfield_10519"]["emailAddress"]
+          backend = fields["customfield_10519"]
           if backend 
-            people << backend
+            email = backend["emailAddress"]
+            if email 
+              people << email
+            end
           end
 
           if full_json['fields']['issuetype']['name'] == "Story"
