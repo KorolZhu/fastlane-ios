@@ -33,9 +33,32 @@ module Fastlane
         puts("people ---- ")
         puts(people)
 
-        require 'json'
-        text = File.read("~/.cache/fastlane/userid.json")
-        useidJson = JSON.parse(text)
+        useidJson = {
+          "zhuzhi@hellotalk.com": "6875492720006135809",
+          "jersey@hellotalk.com": "6875253745668653059",
+          "rayen@hellotalk.com": "6876257595473100802",
+          "brant@hellotalk.com": "6875250454616522755",
+          "luke@hellotalk.com": "6875570438441795587",
+          "sunshine@hellotalk.com": "6876265455259041794",
+          "caddie@hellotalk.com": "6876330288549462017",
+          "lucia@hellotalk.com": "6875597008632037377",
+          "elfin@hellotalk.com": "6811756702556225537",
+          "wade@hellotalk.com": "6881428612185063427",
+          "carol@hellotalk.com": "6875255520157040642",
+          "may@hellotalk.com": "6876259085566623745",
+          "joffy@hellotalk.com": "6875247895130505220",
+          "zhangpan@hellotalk.com": "6875248630517760002",
+          "ken@hellotalk.com": "6875492741011210243",
+          "huiwei@hellotalk.com": "6876332678837256194",
+          "maple@hellotalk.com": "6875888081564696578",
+          "warner@hellotalk.com": "6876338046900387841",
+          "gwynn@hellotalk.com": "6876617603280797697",
+          "xiwi@hellotalk.com": "6875306950737788932",
+          "bobo@hellotalk.com": "6876342027886280706",
+          "jane@hellotalk.com": "6875248265617555460",
+          "zackery@hellotalk.com": "6810314062455373825",
+          "nina@hellotalk.com": "6701653341576888583"
+        }      
 
         users = []
 
