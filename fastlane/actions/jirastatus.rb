@@ -11,7 +11,7 @@ module Fastlane
         # [xxxx](https://jira.hellotalk8.com/jira/browse/IOS-3591)
         log = options[:log]
 
-        people = ["luke@hellotalk.com", "sunshine@hellotalk.com", "caddie@hellotalk.com", "lucia@hellotalk.com"]
+        people = ["fred@hellotalk.com", "luke@hellotalk.com", "sunshine@hellotalk.com", "caddie@hellotalk.com", "lucia@hellotalk.com"]
 
         if log != nil
           log_arr = log.split("\n")
@@ -43,11 +43,13 @@ module Fastlane
           "caddie@hellotalk.com"=>"6876330288549462017",
           "lucia@hellotalk.com"=>"6875597008632037377",
           "elfin@hellotalk.com"=>"6811756702556225537",
+          "young@hellotalk.com"=>"6903690988133285890",
           "wade@hellotalk.com"=>"6881428612185063427",
           "carol@hellotalk.com"=>"6875255520157040642",
           "may@hellotalk.com"=>"6876259085566623745",
           "joffy@hellotalk.com"=>"6875247895130505220",
           "zhangpan@hellotalk.com"=>"6875248630517760002",
+          "jessie@hellotalk.com"=>"6938713639201292289",
           "ken@hellotalk.com"=>"6875492741011210243",
           "huiwei@hellotalk.com"=>"6876332678837256194",
           "maple@hellotalk.com"=>"6875888081564696578",
@@ -57,7 +59,8 @@ module Fastlane
           "bobo@hellotalk.com"=>"6876342027886280706",
           "jane@hellotalk.com"=>"6875248265617555460",
           "zackery@hellotalk.com"=>"6810314062455373825",
-          "nina@hellotalk.com"=>"6701653341576888583"
+          "nina@hellotalk.com"=>"6701653341576888583",
+          "fred@hellotalk.com"=>"6875250100105478145"
         }      
 
         users = []
