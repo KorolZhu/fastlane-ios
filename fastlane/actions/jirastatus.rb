@@ -11,7 +11,7 @@ module Fastlane
         # [xxxx](https://jira.hellotalk8.com/jira/browse/IOS-3591)
         log = options[:log]
 
-        people = ["fred@hellotalk.com", "luke@hellotalk.com", "sunshine@hellotalk.com", "caddie@hellotalk.com", "lucia@hellotalk.com"]
+        people = ["luke@hellotalk.com", "caddie@hellotalk.com"]
 
         if log != nil
           log_arr = log.split("\n")
